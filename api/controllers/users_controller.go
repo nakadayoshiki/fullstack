@@ -11,7 +11,7 @@ import (
 	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/utils/formaterror"
 )
 
-func (s *Sever) CreateUser(w http.ResponseWriter, r *http.Request) {
+func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		responses.ERROR(w, http.StatusUnprocessableEntity, err)
@@ -32,8 +32,19 @@ func (s *Sever) CreateUser(w http.ResponseWriter, r *http.Request) {
 	userCreated, err := user.SaveUser(s.DB)
 	if err != nil {
 		formattedError := formaterror.FormatError(err.Error())
+		responses.ERROR(w, http.StatusInternalServerError, formattedError)
 		return
 	}
 	w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.RequestURI, userCreated.ID))
 	responses.JSON(w, http.StatusCreated, userCreated)
+}
+
+func (s *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
+	user := models.User{}
+	users, err := user.FindAllUsers(s.DB)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, users)
 }
