@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/auth"
 	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/models"
 	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/responses"
@@ -54,7 +56,7 @@ func (s *Server) CreatedPost(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusCreated, postCreated)
 }
 
-func (s *Server) GetPosts(w http.RsponseWriter, r *http.Request) {
+func (s *Server) GetPosts(w http.ResponseWriter, r *http.Request) {
 	post := models.Post{}
 	posts, err := post.FindAllPosts(s.DB)
 	if err != nil {
@@ -62,4 +64,21 @@ func (s *Server) GetPosts(w http.RsponseWriter, r *http.Request) {
 		return
 	}
 	responses.JSON(w, http.StatusOK, posts)
+}
+
+func (s *Server) GetPost(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	pid, err := strconv.ParseUint(vars["id"], 10, 64)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	post := models.Post{}
+	postReceived, err := post.FindPostByID(s.DB, pid)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, postReceived)
 }
