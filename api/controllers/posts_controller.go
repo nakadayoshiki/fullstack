@@ -53,3 +53,13 @@ func (s *Server) CreatedPost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.URL.Path, postCreated.ID))
 	responses.JSON(w, http.StatusCreated, postCreated)
 }
+
+func (s *Server) GetPosts(w http.RsponseWriter, r *http.Request) {
+	post := models.Post{}
+	posts, err := post.FindAllPosts(s.DB)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, posts)
+}
