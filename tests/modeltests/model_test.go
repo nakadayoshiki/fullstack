@@ -144,3 +144,48 @@ func seedOneUserAndOnePost() (models.Post, error) {
 	}
 	return post, nil
 }
+
+func seedUsersAndPosts() ([]models.User, []models.Post, error) {
+	var err error
+	if err != nil {
+		return []models.User{}, []models.Post{}, err
+	}
+
+	var users = []models.User{
+		models.User{
+			Nickname: "Steven victor",
+			Email:    "steven@gmail.com",
+			Password: "password",
+		},
+		models.User{
+			Nickname: "Magu Frank",
+			Email:    "magu@gmail.com",
+			Password: "password",
+		},
+	}
+
+	var posts = []models.Post{
+		models.Post{
+			Title:   "Title 1",
+			Content: "Hello world 1",
+		},
+		models.Post{
+			Title:   "Title 2",
+			Content: "Hello world 2",
+		},
+	}
+
+	for i, _ := range users {
+		err = s.DB.Model(&models.User{}).Create(&users[i]).Error
+		if err != nil {
+			log.Fatalf("cannot seed users table:%v", err)
+		}
+
+		posts[i].AuthorID = users[i].ID
+		err = s.DB.Model(&models.Post{}).Create(&posts[i]).Error
+		if err != nil {
+			log.Fatalf("cannot seed posts table: %v", err)
+		}
+	}
+	return users, posts, nil
+}
