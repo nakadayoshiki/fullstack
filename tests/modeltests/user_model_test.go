@@ -54,7 +54,7 @@ func TestGetUserByID(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	user, err := seedOneUsers()
+	user, err := seedOneUser()
 	if err != nil {
 		log.Fatalf("cannot seed users: %v", err)
 	}
@@ -96,4 +96,24 @@ func TestUpdateUser(t *testing.T) {
 	assert.Equal(t, updatedUser.ID, userUpdate.ID)
 	assert.Equal(t, updatedUser.Email, userUpdate.Email)
 	assert.Equal(t, updatedUser.Nickname, userUpdate.Nickname)
+}
+
+func TestDeleteUser(t *testing.T) {
+	err := refreshUserAndPostTable()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	user, err := seedOneUser()
+	if err != nil {
+		log.Fatalf("cannot seed user: %v", err)
+	}
+
+	isDeleted, err := userInstance.DeleteAUser(s.DB, user.ID)
+	if err != nil {
+		t.Errorf("this is the error updating user: %v\n", err)
+		return
+	}
+
+	assert.Equal(t, isDeleted, int64(1))
 }
