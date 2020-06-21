@@ -1,0 +1,146 @@
+package modeltests
+
+import (
+	"fmt"
+	"log"
+	"os"
+	"testing"
+
+	"github.com/jinzhu/gorm"
+	"github.com/nakadayoshiki/fullstack/github.com/joho/godotenv"
+	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/controllers"
+	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/models"
+)
+
+var (
+	s            = controllers.Server{}
+	userInstance = models.User{}
+	postInstance = models.Post{}
+)
+
+func TestMain(m *testing.M) {
+	var err error
+	err = godotenv.Load(os.ExpandEnv("../../.env"))
+	if err != nil {
+		log.Fatalf("Error getting env %v\n", err)
+	}
+	Database()
+
+	os.Exit(m.Run())
+}
+
+func Database() {
+	var err error
+	TestDbDriver := os.Getenv("TestDbDriver")
+	if TestDbDriver == "mysql" {
+		DBURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", os.Getenv("TestDbUser"), os.Getenv("TestDbPassword"), os.Getenv("TestDbHost"), os.Getenv("TestDbPort"), os.Getenv("TestDbName"))
+		s.DB, err = gorm.Open(TestDbDriver, DBURL)
+		if err != nil {
+			fmt.Printf("Cannot connect to %s database\n", TestDbDriver)
+			log.Fatal("This is the error:", err)
+		} else {
+			fmt.Printf("We are connected to database %s\n", TestDbDriver)
+		}
+	}
+	if TestDbDriver == "postgres" {
+		DBURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=disable password=%s", os.Getenv("TestDbHost"), os.Getenv("TestDbPort"), os.Getenv("TestDbUser"), os.Getenv("TestDbName"), os.Getenv("TestDbPassword"))
+		s.DB, err = gorm.Open(TestDbDriver, DBURL)
+		if err != nil {
+			fmt.Printf("Cannot connect to %s database\n", TestDbDriver)
+			log.Fatal("This is the error:", err)
+		} else {
+			fmt.Printf("We are connected to the %s database\n", TestDbDriver)
+		}
+	}
+}
+
+func refreshUserTable() error {
+	err := s.DB.DropTableIfExists(&models.User{}).Error
+	if err != nil {
+		return err
+	}
+
+	err = s.DB.AutoMigrate(&models.User{}).Error
+	if err != nil {
+		return err
+	}
+	log.Printf("Successfully refreshed table")
+	return nil
+}
+
+func seedOneUsers() (models.User, error) {
+	refreshUserTable()
+	user := models.User{
+		Nickname: "Pet",
+		Email:    "pet@gmail.com",
+		Password: "password",
+	}
+	err := s.DB.Model(&models.User{}).Create(&user).Error
+	if err != nil {
+		log.Fatalf("canotto seed users table: %v", err)
+	}
+	return user, nil
+}
+
+func seedUsers() error {
+	users := []models.User{
+		models.User{
+			Nickname: "Steven victor",
+			Email:    "steven@gmail.com",
+			Password: "password",
+		},
+		models.User{
+			Nickname: "kenny",
+			Email:    "kenny@gmail.com",
+			Password: "password",
+		},
+	}
+
+	for i, _ := range users {
+		err := s.DB.Model(&models.User{}).Create(&users[i]).Error
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func refreshUserAndPostTable() error {
+	err := s.DB.DropTableIfExists(&models.User{}, &models.Post{}).Error
+	if err != nil {
+		return err
+	}
+	err = s.DB.AutoMigrate(&models.User{}, &models.Post{}).Error
+	if err != nil {
+		return err
+	}
+	log.Printf("Successfully refreshed tables")
+	return nil
+}
+
+func seedOneUserAndOnePost() (models.Post, error) {
+	err := refreshUserAndPostTable()
+	if err != nil {
+		return models.Post{}, err
+	}
+	user := models.User{
+		Nickname: "sam",
+		Email:    "sam@gmail.com",
+		Password: "password",
+	}
+	err = s.DB.Model(&models.User{}).Create(&user).Error
+	if err != nil {
+		return models.Post{}, err
+	}
+
+	post := models.Post{
+		Title:    "This is the title sam",
+		Content:  "This is the content sam",
+		AuthorID: user.ID,
+	}
+	err = s.DB.Model(&models.Post{}).Create(&post).Error
+	if err != nil {
+		return models.Post{}, err
+	}
+	return post, nil
+}
