@@ -5,10 +5,10 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/auth"
-	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/models"
-	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/responses"
-	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/utils/formaterror"
+	"github.com/nakadayoshiki/fullstack/api/auth"
+	"github.com/nakadayoshiki/fullstack/api/models"
+	"github.com/nakadayoshiki/fullstack/api/responses"
+	"github.com/nakadayoshiki/fullstack/api/utils/formaterror"
 	"golang.org/x/crypto/bcrypt"
 )
 

@@ -4,7 +4,7 @@ import (
 	"log"
 	"testing"
 
-	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/models"
+	"github.com/nakadayoshiki/fullstack/api/models"
 	"gopkg.in/go-playground/assert.v1"
 )
 

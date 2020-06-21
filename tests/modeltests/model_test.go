@@ -7,9 +7,9 @@ import (
 	"testing"
 
 	"github.com/jinzhu/gorm"
-	"github.com/nakadayoshiki/fullstack/github.com/joho/godotenv"
-	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/controllers"
-	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/models"
+	"github.com/joho/godotenv"
+	"github.com/nakadayoshiki/fullstack/api/controllers"
+	"github.com/nakadayoshiki/fullstack/api/models"
 )
 
 var (

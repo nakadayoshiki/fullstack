@@ -9,10 +9,10 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/auth"
-	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/models"
-	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/responses"
-	"github.com/nakadayoshiki/fullstack/github.com/nakadayoshiki/fullstack/api/utils/formaterror"
+	"github.com/nakadayoshiki/fullstack/api/auth"
+	"github.com/nakadayoshiki/fullstack/api/models"
+	"github.com/nakadayoshiki/fullstack/api/responses"
+	"github.com/nakadayoshiki/fullstack/api/utils/formaterror"
 )
 
 func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
