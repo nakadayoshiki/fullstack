@@ -15,7 +15,7 @@ type Server struct {
 	Router *mux.Router
 }
 
-func (s *Server) Intialize(DbDriver, DbUser, DbPassword, DbPort, DbHost, DbName string) {
+func (s *Server) Initialize(DbDriver, DbUser, DbPassword, DbPort, DbHost, DbName string) {
 	var err error
 
 	if DbDriver == "mysql" {
