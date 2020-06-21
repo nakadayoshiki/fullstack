@@ -55,7 +55,7 @@ func (s *Server) GetUsers(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) GetUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	uid, err := strconv.ParseUint(vars["uid"], 10, 32)
+	uid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
@@ -95,8 +95,9 @@ func (s *Server) UpdatedUser(w http.ResponseWriter, r *http.Request) {
 		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
 		return
 	}
-	if tokenID != 0 && tokenID != uint32(uid) {
+	if tokenID != uint32(uid) {
 		responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
+		return
 	}
 
 	user.Prepare()
@@ -119,7 +120,7 @@ func (s *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	user := models.User{}
 
-	uid, err := strconv.ParseUint(vars["uid"], 10, 32)
+	uid, err := strconv.ParseUint(vars["id"], 10, 32)
 	if err != nil {
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return

@@ -45,7 +45,7 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
 func (s *Server) SignIn(email, password string) (string, error) {
 	var err error
 	user := models.User{}
-	err = s.DB.Debug().Model(models.User{}).Where("id = ?", email).Take(&user).Error
+	err = s.DB.Debug().Model(models.User{}).Where("email = ?", email).Take(&user).Error
 	if err != nil {
 		return "", err
 	}
