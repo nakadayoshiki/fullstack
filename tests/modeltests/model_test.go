@@ -68,7 +68,7 @@ func refreshUserTable() error {
 	return nil
 }
 
-func seedOneUsers() (models.User, error) {
+func seedOneUser() (models.User, error) {
 	refreshUserTable()
 	user := models.User{
 		Nickname: "Pet",
